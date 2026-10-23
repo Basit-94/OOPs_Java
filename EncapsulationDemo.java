@@ -28,11 +28,16 @@ class UserAccount {
         return email;
     }
     public void setEmail(String email) {
-        if(email.contains("@") && email.contains(".")) {
-            this.email = email;
-            return;
+        if(!email.contains("@") || !email.contains(".") ) {
+            throw new InvalidEmailException("Malformed Email : "+email);
         }
-        System.out.println("Invalid Email");
+        this.email = email;
+    }
+}
+
+class InvalidEmailException extends RuntimeException {
+    public InvalidEmailException(String email) {
+        super(email);
     }
 }
 
@@ -43,6 +48,15 @@ public class EncapsulationDemo {
         String accountId = in.next();
         String email = in.next();
         double balance = in.nextDouble();
-        UserAccount userAccount = new UserAccount(accountId, email, balance);
+        try {
+            UserAccount userAccount = new UserAccount(accountId, email, balance);
+        }
+        catch(InvalidEmailException e){
+            System.out.println(e.getMessage());
+        }
+
+        finally {
+            System.out.println("Transaction session closed.");
+        }
     }
 }
